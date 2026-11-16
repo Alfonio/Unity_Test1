@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 //Script hijo de CharacterBase. En este se determina el script de 
 public class FirstPersonController : CharacterBase
 {
-    [SerializeField] private float sensitivity = 0.2f;
+    [SerializeField] private float sensitivity = 0.1f;
     [SerializeField] private float minLimit = -80f;
     [SerializeField] private float maxLimit = 80f;
     [SerializeField] private Transform cameraTransform;
@@ -27,6 +27,7 @@ public class FirstPersonController : CharacterBase
 
     private void OnEnable()
     {
+        Cursor.visible = false;
         _inputAction.Player.Enable();
 
         _inputAction.Player.Move.performed += SetMovement;
@@ -38,6 +39,7 @@ public class FirstPersonController : CharacterBase
 
     private void OnDisable()
     {
+        Cursor.visible = true;
         _inputAction.Player.Move.performed -= SetMovement;
         _inputAction.Player.Move.canceled -= ResetMovement;
 
