@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 //Script hijo de CharacterBase. En este se determina el script de 
-public class FirstPersonController : CharacterBase
+public class FirstPersonController : CharacterBase  //aca se aplica herencia
 {
     [SerializeField] private float sensitivity = 0.1f;
     [SerializeField] private float minLimit = -80f;

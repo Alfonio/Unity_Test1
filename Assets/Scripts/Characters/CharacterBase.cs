@@ -4,7 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public abstract class CharacterBase : MonoBehaviour
 {
-    [SerializeField] private float movementSpeed = 8f;
+    [SerializeField] private float movementSpeed = 8f; //aca se puede ver encapsulamiento llamado luego por la funcion public float MovementSpeed
     [SerializeField] private float gravity = -9.8f;
 
     private CharacterController _characterController;
