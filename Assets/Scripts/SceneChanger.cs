@@ -89,7 +89,8 @@ public class SceneChanger : MonoBehaviour
         // Ya se recorrieron las 10 escenas: la "escena 11" es la victoria.
         if (pendingScenes.Count == 0)
         {
-            Debug.Log("ganaste");
+            GameWin.Won = true;
+            SceneManager.LoadScene(homeScene);   // Home muestra UI_WIN gracias a WinScreen
             return;
         }
 

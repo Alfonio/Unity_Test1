@@ -27,7 +27,7 @@ public class MainMenu : MonoBehaviour
         Register(new ShowPanelAction("options", optionsPanel));
         Register(new HidePanelAction("close_options", optionsPanel));
 
-        // Pantalla de muerte
+        // Pantalla de muerte / victoria
         Register(new ReplayAction("replay"));
         Register(new BackToMenuAction("menu"));
     }
