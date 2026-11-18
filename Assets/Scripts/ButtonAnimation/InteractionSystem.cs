@@ -8,8 +8,20 @@ public interface IInteractable
 
 public class InteractionSystem : MonoBehaviour
 {
-    public Camera cam;
-    public float distance = 3f;
+    [SerializeField] private Camera cam;
+    [SerializeField] private float distance = 3f;
+
+    public float Distance
+    {
+        get => distance;
+        set => distance = Mathf.Max(0f, value); // evita valores negativos
+    }
+
+    public Camera Cam
+    {
+        get => cam;
+        set => cam = value;
+    }
 
     void Update()
     {

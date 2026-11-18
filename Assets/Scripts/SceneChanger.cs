@@ -1,12 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-#if ENABLE_INPUT_SYSTEM
-using UnityEngine.InputSystem;
-#endif
 
 /// <summary>
-/// Cambia de escena al apretar la tecla E.
+/// Maneja el recorrido de escenas y valida los botones.
 /// Se crea solo al iniciar el juego (no hace falta ponerlo en ningún objeto).
 /// Reglas:
 ///  - Cada recorrido tiene como máximo "maxScenes" escenas (10).
@@ -14,7 +11,7 @@ using UnityEngine.InputSystem;
 ///  - Home SÍ puede repetirse (se intercala entre anomalías).
 /// Estructuras de datos:
 ///  - List<string>: escenas Anomaly disponibles y armado del recorrido.
-///  - Queue<string>: recorrido pendiente (FIFO), se consume con cada E.
+///  - Queue<string>: recorrido pendiente (FIFO), se consume con cada botón correcto.
 ///  - Dictionary<string, int>: cuántas veces se visitó cada escena.
 /// Singleton persistente para que la cola sobreviva al cambio de escena.
 /// </summary>
@@ -23,6 +20,7 @@ public class SceneChanger : MonoBehaviour
     public static SceneChanger Instance { get; private set; }
 
     private string homeScene = "Home";
+    private string deathScene = "Muerte";
     private int maxScenes = 10;
     private List<string> anomalyScenes = new List<string>
     {
@@ -59,26 +57,6 @@ public class SceneChanger : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
         StartNewRun();
-    }
-
-    private void Update()
-    {
-        if (WasChangeKeyPressed())
-        {
-            LoadNextScene();
-        }
-    }
-
-    // Funciona con el Input System nuevo y con el viejo.
-    private bool WasChangeKeyPressed()
-    {
-#if ENABLE_INPUT_SYSTEM
-        return Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame;
-#elif ENABLE_LEGACY_INPUT_MANAGER
-        return Input.GetKeyDown(KeyCode.E);
-#else
-        return false;
-#endif
     }
 
     /// <summary>Arma un recorrido nuevo de hasta maxScenes escenas.</summary>
@@ -119,6 +97,33 @@ public class SceneChanger : MonoBehaviour
         visitCount[next]++;
         Debug.Log($"Cambio {maxScenes - pendingScenes.Count}/{maxScenes}: cargando {next}");
         SceneManager.LoadScene(next);
+    }
+
+    /// <summary>
+    /// Verifica si el botón apretado corresponde al tipo de la escena actual.
+    /// Correcto: avanza a la siguiente escena. Incorrecto: debug, sin cambiar de escena.
+    /// </summary>
+    public void PressButton(bool isAnomalyButton)
+    {
+        string current = SceneManager.GetActiveScene().name;
+        bool inHome = current == homeScene;
+        bool inAnomaly = anomalyScenes.Contains(current);
+
+        // Escena que no es ni Home ni Anomaly (menú, etc.): no hace nada.
+        if (!inHome && !inAnomaly) return;
+
+        bool correct = isAnomalyButton ? inAnomaly : inHome;
+
+        if (correct)
+        {
+            Debug.Log("Correcto");
+            LoadNextScene();
+        }
+        else
+        {
+            Debug.Log("Apretaste el equivocado: yendo a " + deathScene);
+            SceneManager.LoadScene(deathScene);
+        }
     }
 
     public int GetVisitCount(string sceneName)

@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-//Script hijo de CharacterBase. En este se determina el script de 
-public class FirstPersonController : CharacterBase  //aca se aplica herencia
+
+// Script hijo de CharacterBase.
+public class FirstPersonController : CharacterBase  // acá se aplica herencia
 {
     [SerializeField] private float sensitivity = 0.1f;
     [SerializeField] private float minLimit = -80f;
@@ -27,7 +28,10 @@ public class FirstPersonController : CharacterBase  //aca se aplica herencia
 
     private void OnEnable()
     {
+        // Al entrar al juego: cursor oculto y bloqueado en el centro.
+        Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
         _inputAction.Player.Enable();
 
         _inputAction.Player.Move.performed += SetMovement;
@@ -39,7 +43,10 @@ public class FirstPersonController : CharacterBase  //aca se aplica herencia
 
     private void OnDisable()
     {
+        // Al desactivar al jugador (pausa, volver al menú): cursor libre y visible.
+        Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
         _inputAction.Player.Move.performed -= SetMovement;
         _inputAction.Player.Move.canceled -= ResetMovement;
 
