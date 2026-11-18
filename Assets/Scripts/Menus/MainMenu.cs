@@ -5,19 +5,19 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
     [Header("Paneles")]
-    [SerializeField] private UIPanel menuPanel;      // NUEVO: el propio UI_Menu
+    [SerializeField] private UIPanel menuPanel;      // el propio UI_Menu (vacío en la escena Muerte)
     [SerializeField] private UIPanel tutorialPanel;
     [SerializeField] private UIPanel optionsPanel;
 
     [Header("Jugador")]
-    [SerializeField] private FirstPersonController player;   // NUEVO: el script del Player
+    [SerializeField] private FirstPersonController player;   // el script del Player (vacío en Muerte)
 
     // ESTRUCTURA DE DATOS: Dictionary para buscar la acción según el id del botón.
     private readonly Dictionary<string, IMenuAction> _actions = new Dictionary<string, IMenuAction>();
 
     private void Awake()
     {
-        // CAMBIO: Play ahora oculta el menú en vez de recargar la escena.
+        // Menú principal
         Register(new PlayAction("play", menuPanel, player));
         Register(new QuitAction("quit"));
 
@@ -26,13 +26,19 @@ public class MainMenu : MonoBehaviour
 
         Register(new ShowPanelAction("options", optionsPanel));
         Register(new HidePanelAction("close_options", optionsPanel));
+
+        // Pantalla de muerte
+        Register(new ReplayAction("replay"));
+        Register(new BackToMenuAction("menu"));
     }
 
-    // Cursor visible y libre mientras estamos en el menú.
     private void Start()
     {
-        // Si ya se tocó Play en esta partida (por ejemplo, SceneChanger volvió a cargar Home),
-        // no mostramos el menú: el jugador queda activo y el cursor lo maneja FirstPersonController.
+        // En la escena Muerte no hay menuPanel: no hay nada que mostrar ni congelar.
+        if (menuPanel == null) return;
+
+        // Si ya se tocó Play en esta partida, no mostramos el menú:
+        // el jugador queda activo y el cursor lo maneja FirstPersonController.
         if (GameSession.Started)
         {
             menuPanel.Hide();
@@ -110,7 +116,7 @@ public abstract class MenuActionBase : IMenuAction
 }
 
 // PATRÓN STRATEGY: cada botón tiene su estrategia intercambiable.
-// CAMBIO: oculta el menú y activa al jugador. Al activarse, FirstPersonController
+// Play oculta el menú y activa al jugador. Al activarse, FirstPersonController
 // bloquea el cursor solo (en su OnEnable).
 public class PlayAction : MenuActionBase
 {
@@ -173,6 +179,38 @@ public class QuitAction : MenuActionBase
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
+    }
+}
+
+// PLAY AGAIN: recorrido nuevo desde 0 y directo a Home, sin menú.
+public class ReplayAction : MenuActionBase
+{
+    public ReplayAction(string id) : base(id) { }
+
+    protected override void OnExecute()
+    {
+        GameSession.Started = true;   // Home no muestra el menú, el jugador queda activo
+
+        if (SceneChanger.Instance != null)
+            SceneChanger.Instance.StartNewRun();
+
+        SceneLoader.Instance.Load("Home");
+    }
+}
+
+// MENU: recorrido nuevo y vuelve a Home mostrando UI_Menu.
+public class BackToMenuAction : MenuActionBase
+{
+    public BackToMenuAction(string id) : base(id) { }
+
+    protected override void OnExecute()
+    {
+        GameSession.Started = false;  // MainMenu.Start() muestra el menú y congela al jugador
+
+        if (SceneChanger.Instance != null)
+            SceneChanger.Instance.StartNewRun();
+
+        SceneLoader.Instance.Load("Home");
     }
 }
 
