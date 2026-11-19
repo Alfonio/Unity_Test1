@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// Se crea solo al cargar la escena "Muerte" (no hace falta ponerlo en ningún objeto).
+/// Se crea solo al cargar la escena "Muerte" (no hace falta ponerlo en ningún gameObject o objeto random).
 /// Congela al jugador apenas carga la escena.
 /// </summary>
 public class DeathScene : MonoBehaviour
@@ -42,11 +42,11 @@ public class DeathScene : MonoBehaviour
             if (script != null) script.enabled = false;
         }
 
-        // Apaga el CharacterController si tiene.
+        // Apaga el CharacterController 
         CharacterController cc = player.GetComponent<CharacterController>();
         if (cc != null) cc.enabled = false;
 
-        // Si usa Rigidbody, lo deja quieto.
+        // le quito el rigidbody para que se quede quieto
         Rigidbody rb = player.GetComponent<Rigidbody>();
         if (rb != null) rb.isKinematic = true;
 

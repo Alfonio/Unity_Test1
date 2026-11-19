@@ -17,7 +17,7 @@ public static class GameWin
 /// <summary>
 /// Se crea solo al iniciar el juego (no hace falta ponerlo en ningún objeto).
 /// Cada vez que se carga la escena Home busca UI_WIN, UI_Menu y el Player por su cuenta:
-///  - Si se ganó (GameWin.Won): oculta UI_Menu, prende UI_WIN, libera el cursor y congela al Player.
+///  - Si se ganó (GameWin.Won): oculta UI_Menu, prende UI_WIN, libera el cursor y congela al Player. (para que no se vaya de mambo por ahi en el mapa)
 ///  - Si no: se asegura de que UI_WIN esté oculto (por ejemplo después de Replay).
 /// Los objetos tienen que llamarse exactamente "UI_WIN" y "UI_Menu".
 /// </summary>
@@ -53,7 +53,7 @@ public class WinScreen : MonoBehaviour
         if (scene.name != HomeScene) return;
 
         // Esperamos un frame para actuar después de los Start() de la escena
-        // (MainMenu y FirstPersonController) y que no nos pisen el cursor ni el Player.
+        // (MainMenu y FirstPersonController) y que no se pise el cursor ni el Player.
         StartCoroutine(ApplyNextFrame());
     }
 
@@ -78,7 +78,7 @@ public class WinScreen : MonoBehaviour
             yield break;
         }
 
-        GameWin.Won = false;   // se consume: Replay o Menu arrancan limpios
+        GameWin.Won = false;   // se consume: Replay o Menu arrancan limpios (para que no aparezcan los menus mal)
 
         FirstPersonController player = FindFirstObjectByType<FirstPersonController>(FindObjectsInactive.Include);
 

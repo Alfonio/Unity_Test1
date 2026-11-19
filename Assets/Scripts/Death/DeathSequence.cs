@@ -30,7 +30,7 @@ public class DeathSequence : MonoBehaviour
         OnPlayerDied -= HandlePlayerDied;
     }
 
-    // Lo llama el Animation Event del clip (o lo podés llamar desde otro script).
+    // Lo llama el Animation Event del clip.(lo configure desde el modelo a este, se nota la flechita azul al tocar la linea de tiempo)
     public void Disparar()
     {
         if (_disparando) return;

@@ -59,23 +59,23 @@ public class SceneChanger : MonoBehaviour
         StartNewRun();
     }
 
-    /// <summary>Arma un recorrido nuevo de hasta maxScenes escenas.</summary>
+    /// Arma un recorrido nuevo de hasta maxScenes escenas.
     public void StartNewRun()
     {
-        // 1) Anomalías mezcladas, sin repetir (se toman como máximo maxScenes).
+        // Anomalías mezcladas, sin repetir (tomo como máximo maxScenes).
         List<string> sequence = new List<string>(anomalyScenes);
         Shuffle(sequence);
         int anomalyCount = Mathf.Min(sequence.Count, maxScenes);
         sequence.RemoveRange(anomalyCount, sequence.Count - anomalyCount);
 
-        // 2) Lo que falta para llegar a maxScenes se completa con Home.
+        // Lo que falta para llegar a maxScenes se completa con Home (osea 2 en este caso).
         int homeCount = maxScenes - anomalyCount;
         for (int i = 0; i < homeCount; i++)
         {
             InsertHome(sequence);
         }
 
-        // 3) Cola + diccionario de visitas.
+        // Cola + diccionario de visitas.
         pendingScenes = new Queue<string>(sequence);
         visitCount = new Dictionary<string, int>();
         foreach (string sceneName in sequence)
@@ -90,7 +90,7 @@ public class SceneChanger : MonoBehaviour
         if (pendingScenes.Count == 0)
         {
             GameWin.Won = true;
-            SceneManager.LoadScene(homeScene);   // Home muestra UI_WIN gracias a WinScreen
+            SceneManager.LoadScene(homeScene);   // Home muestra UI_WIN 
             return;
         }
 
@@ -101,7 +101,7 @@ public class SceneChanger : MonoBehaviour
     }
 
     /// <summary>
-    /// Verifica si el botón apretado corresponde al tipo de la escena actual.
+    // Verifica si el botón apretado corresponde al tipo de la escena actual.
     /// Correcto: avanza a la siguiente escena. Incorrecto: debug, sin cambiar de escena.
     /// </summary>
     public void PressButton(bool isAnomalyButton)

@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
     [Header("Paneles")]
-    [SerializeField] private UIPanel menuPanel;      // el propio UI_Menu (vacío en la escena Muerte)
+    [SerializeField] private UIPanel menuPanel;      // el propio UI_Menu (necesito ponerlo vacío en la escena Muerte, no actua pero funcionalidades del script si)
     [SerializeField] private UIPanel tutorialPanel;
     [SerializeField] private UIPanel optionsPanel;
 
@@ -48,7 +48,7 @@ public class MainMenu : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        // El jugador queda quieto hasta que se toque Play.
+        // El jugador queda quieto hasta que se toque Play. (para que no se vaya del ascensor)
         if (player != null)
             player.enabled = false;
     }
@@ -68,12 +68,12 @@ public class MainMenu : MonoBehaviour
     }
 }
 
-// Recuerda si ya se tocó Play en esta partida. Es estático: sobrevive al cambio de escena.
+// Esto recuerda si ya se tocó Play en esta partida. Es estático: sobrevive al cambio de escena y no tengo que repetir codigo.
 public static class GameSession
 {
     public static bool Started;
 
-    // Se reinicia al arrancar el juego (necesario si el Editor no recarga el dominio).
+    // Se reinicia al arrancar el juego (necesario si el Editor no recarga el dominio). 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetOnLaunch()
     {
